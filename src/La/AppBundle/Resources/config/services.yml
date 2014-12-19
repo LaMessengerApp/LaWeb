@@ -1,0 +1,6 @@
+services:
+#    la_app.example:
+#        class: La\AppBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    la_user.userService:
+        class: La\UserBundle\Services\userService

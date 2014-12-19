@@ -1,0 +1,11 @@
+la_app_homepage:
+    path:     /
+    defaults: { _controller: LaAppBundle:Default:index }
+
+la_app_conversations:
+    path:     /conversations
+    defaults: { _controller: LaAppBundle:Default:conversations }
+
+la_app_addconversation:
+    path:     /addconversation/{users}
+    defaults: { _controller: LaAppBundle:Default:addConversation }

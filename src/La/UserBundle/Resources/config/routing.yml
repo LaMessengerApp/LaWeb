@@ -1,0 +1,21 @@
+la_user_homepage:
+    path:     /
+    defaults: { _controller: LaUserBundle:Default:index }
+
+la_user_new_friend:
+    path:     /addFriend/{newFriendId}
+    defaults: { _controller: LaUserBundle:Default:add_friend }
+    requirements:
+        id: \d+
+
+la_user_valid_friendship:
+    path:     /validFriendship/{friendId}
+    defaults: { _controller: LaUserBundle:Default:valid_friendship }
+    requirements:
+        id: \d+
+
+la_user_delete_friendship:
+    path:     /deleteFriendship/{friendId}
+    defaults: { _controller: LaUserBundle:Default:delete_friendship }
+    requirements:
+        id: \d+

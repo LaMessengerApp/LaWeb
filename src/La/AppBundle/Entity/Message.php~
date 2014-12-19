@@ -1,0 +1,57 @@
+<?php
+// src/La/AppBundle/Entity/Message.php
+
+namespace La\AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use La\UserBundle\Entity\User;
+use La\AppBundle\Entity\Conversation;
+
+
+/**
+ * @ORM\Entity(repositoryClass="La\AppBundle\Entity\MessageRepository")
+ * @ORM\Table(name="message")
+ */
+class Message
+{
+    /**
+   * @ORM\Column(name="id", type="integer")
+   * @ORM\Id
+   * @ORM\GeneratedValue(strategy="AUTO")
+   */
+  private $id;
+
+  /**
+   * @ORM\OneToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
+   */
+  private $author;
+
+  /**
+   * @ORM\ManyToOne(targetEntity="La\AppBundle\Entity\Conversation")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $conversation;
+
+  /**
+   * @ORM\Column(name="text", type="string", length=1024)
+   */
+  private $text;
+
+  public function setConversation(Conversation $conversation)
+  {
+    $this->conversation = $conversation;
+
+    return $this;
+  }
+
+  public function getConversation()
+  {
+    return $this->conversation;
+  }
+
+  public function __toString()
+    {
+        return $this->author." : ".$this->text;
+    }
+  
+}

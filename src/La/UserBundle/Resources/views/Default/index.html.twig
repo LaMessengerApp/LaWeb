@@ -1,0 +1,23 @@
+<html>
+<header>
+</header>
+<body>
+Je suis : {{ app.user}} <br>
+friends :<br> 
+<ul>
+{%for friend in friends %}
+<li>
+{% if friend.status ==  1 %}
+	<span style="font-weight:bold">{{ friend }} veut être votre ami(e)</span><a href="validFriendship/{{friend.user2.getId()}}">Accepter</a>
+{% elseif friend.status ==  0 %}
+	<span style="font-style:italic">{{ friend }} en attente de validation</span>
+{% else %} 
+	{{ friend }}<a href="deleteFriendship/{{friend.user2.getId()}}">Supprimer</a>
+{% endif %} .
+</li>
+{% endfor %}
+</ul>
+<br>
+</body>
+</html>
+

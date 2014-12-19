@@ -1,0 +1,36 @@
+<?php
+// src/La/AppBundle/Entity/Conversation.php
+
+namespace La\AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use La\UserBundle\Entity\User;
+use La\AppBundle\Entity\Message;
+
+
+/**
+ * @ORM\Entity(repositoryClass="La\AppBundle\Entity\ConversationRepository")
+ * @ORM\Table(name="conversation")
+ */
+class Conversation
+{
+    /**
+   * @ORM\Column(name="id", type="integer")
+   * @ORM\Id
+   * @ORM\GeneratedValue(strategy="AUTO")
+   */
+  private $id;
+
+  /**
+    * @ORM\ManyToMany(targetEntity="La\UserBundle\Entity\User", inversedBy="conversations")
+    */
+  private $users;
+
+  
+
+  public function __toString()
+    {
+        return $this->id;
+    }
+  
+}
