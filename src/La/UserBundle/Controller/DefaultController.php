@@ -12,9 +12,10 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-
     	$user = $this->container->get('security.context')->getToken()->getUser();
-
+    	if($user == "anon."){
+    		return $this->redirect('../login');
+    	}
 		//utilisation de repository
 		//$friends = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findFriends($user);
     	
@@ -25,8 +26,18 @@ class DefaultController extends Controller
 
     public function add_friendAction($newFriendId)
     {
-
+    	//on recupere l'user courant
     	$user = $this->container->get('security.context')->getToken()->getUser();
+
+    	/* ESSAI DE SERVICE FAILED
+    	// appel du service userService
+    	$userService= $this->container->get('la_user.userService');
+    	//on utilise la fonction addFriendship du service userService
+    	$em = $this->getDoctrine()->getManager();
+    	$test = $userService->addFriendship($em,1,2);
+    	return new Response($test);
+    	*/
+    	
 
     	// On récupère le repository
 		$repository = $this->getDoctrine()
@@ -70,6 +81,7 @@ class DefaultController extends Controller
         $em->flush();
 
         return $this->redirect($this->generateUrl('la_user_homepage'));
+        
     }
 
     public function valid_friendshipAction($friendId)

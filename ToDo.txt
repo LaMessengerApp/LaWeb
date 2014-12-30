@@ -1,2 +1,21 @@
-Coucou
-Chouette alors
+////////////////   TODO    ///////////////////
+
+////////////  /////////	  //////.     ///////// 
+	///	      ///	///	  ///    //   ///   ///
+	///		  ///   ///	  ///    //   ///   ///
+	///		  ///   ///	  ///    //   ///   ///
+	///		  /////////	  /////.      /////////
+
+
+
+/// NOTES ///
+
+MAX B.
+	Les services ne nous sont pas forcement nécessaire, car pour l'api il semble que l'on fait les traitement dans le controleur
+	Voir ce tuto : http://obtao.com/blog/2013/12/creer-une-api-rest-dans-une-application-symfony/
+
+	Des plus galère pour les injections de service avec Doctrine, je n'y arrive pas
+
+	Install du bundle FOSRestBundle + JMSSerializerBundle (serialize les objets)
+
+	Voir  pour sécuriser l'api : http://obtao.com/blog/2014/02/configurer-wsse-sur-symfony-avec-le-fosrestbundle/
