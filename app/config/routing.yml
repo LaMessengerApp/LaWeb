@@ -13,3 +13,9 @@ fos_user:
 app:
     resource: @AppBundle/Controller/
     type:     annotation
+
+#REST 
+rest : 
+    type : rest 
+    resource : La\UserBundle\Controller\UsersApiController
+    prefix : /api

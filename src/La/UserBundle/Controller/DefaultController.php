@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use La\UserBundle\Entity\User;
 use La\UserBundle\Entity\Repository\UserRepository;
+use FOS\RestBundle\Controller\Annotations\View;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DefaultController extends Controller
 {
@@ -150,4 +152,17 @@ class DefaultController extends Controller
 
         return $this->redirect($this->generateUrl('la_user_homepage'));
     }
+}
+
+
+/// REST API ///
+class UserRestController extends Controller
+{
+  public function getUserAction($username){
+    $user = $this->getRepository('LaUserBundle:User')->findOneByUsername($username);
+    if(!is_object($user)){
+      throw $this->createNotFoundException();
+    }
+    return $user;
+  }
 }
