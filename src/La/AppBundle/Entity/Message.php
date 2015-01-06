@@ -22,7 +22,7 @@ class Message
   private $id;
 
   /**
-   * @ORM\OneToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
+   * @ORM\ManyToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
    */
   private $author;
 

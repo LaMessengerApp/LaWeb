@@ -83,4 +83,19 @@ class Conversation
     {
         return $this->users;
     }
+
+    /**
+     * Has user
+     *
+     * @return Boolean
+     */
+    public function hasUser(\La\UserBundle\Entity\User $user)
+    {
+        foreach ($this->users as $k => $u) {
+            if($user == $u){
+                return true;
+            }
+        }
+        return false;
+    }
 }

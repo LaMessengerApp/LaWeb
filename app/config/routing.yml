@@ -15,7 +15,14 @@ app:
     type:     annotation
 
 #REST 
-rest : 
+rest_users : 
     type : rest 
     resource : La\UserBundle\Controller\UsersApiController
     prefix : /api
+
+rest_messages : 
+    type : rest 
+    resource : La\AppBundle\Controller\MessagesApiController
+    prefix : /api
+    requirements:
+        _method: POST
