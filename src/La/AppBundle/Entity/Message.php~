@@ -22,7 +22,7 @@ class Message
   private $id;
 
   /**
-   * @ORM\OneToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
+   * @ORM\ManyToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
    */
   private $author;
 
@@ -36,6 +36,13 @@ class Message
    * @ORM\Column(name="text", type="string", length=1024)
    */
   private $text;
+
+  /**
+    * @var \DateTime
+    *
+    * @ORM\Column(name="date", type="datetime")
+    */
+  private $date;
 
   public function setConversation(Conversation $conversation)
   {
@@ -54,4 +61,60 @@ class Message
         return $this->author." : ".$this->text;
     }
   
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set text
+     *
+     * @param string $text
+     * @return Message
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * Get text
+     *
+     * @return string 
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * Set author
+     *
+     * @param \La\UserBundle\Entity\User $author
+     * @return Message
+     */
+    public function setAuthor(\La\UserBundle\Entity\User $author = null)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return \La\UserBundle\Entity\User 
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
 }

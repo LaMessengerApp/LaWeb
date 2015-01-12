@@ -63,6 +63,7 @@ class MessagesApiController extends Controller
         $conv->addUser($user);
       }
       $conv->addUser($me);
+      $em->persist($conv);
     }
     
 
@@ -72,8 +73,6 @@ class MessagesApiController extends Controller
     $mess->setConversation($conv);
     $mess->setText($text);
 
-  
-    $em->persist($conv);
     $em->persist($mess);
     // Envoi BDD
     $em->flush();
@@ -83,23 +82,28 @@ class MessagesApiController extends Controller
 
   /**
     *
-    * get user conversations
+    * get conversations
     *
     * @return array
     * @View()
     */
   public function getConversationsAction(){
+    // /api/conversations
     $me = $this->container->get('security.context')->getToken()->getUser();
     $em = $this->getDoctrine()->getManager();
 
-    $conversations = $me->getConversations();
-    foreach ($conversations as $k => $c) {
-      $conversations->messages[] = $em->getRepository('LaAppBundle:Message')->findByConversation($c->getId());
+    //$mess = $em->getRepository('LaAppBundle:Message')->findByAuthor($me->getId());
+
+    $conv = $me->getConversations();
+    foreach ($conv as $k => $c) {
+      $conversations[$k]['id'] = $c->getId();
+      $conversations[$k]['users'] = $c->getUsers();
+      $conversations[$k]['messages'] = $em->getRepository('LaAppBundle:Message')->findByConversation($c->getId());
     }
 
-    $conv = new array();
-    $conv = $conversations;
-    return array('conversations' => $conv, 'mess' => $conversations->messages);
+
+    //$conversations = $conv;
+    return array('conversations' => $conversations);
   }
 }
 

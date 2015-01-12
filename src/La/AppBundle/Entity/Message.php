@@ -37,6 +37,18 @@ class Message
    */
   private $text;
 
+  /**
+    * @var \DateTime
+    *
+    * @ORM\Column(name="date", type="datetime")
+    */
+  private $date;
+
+  public function __construct()
+  {
+    $this->date = new \Datetime();
+  }
+
   public function setConversation(Conversation $conversation)
   {
     $this->conversation = $conversation;
@@ -109,5 +121,28 @@ class Message
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     * @return Message
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime 
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }
