@@ -25,9 +25,9 @@ class UsersApiController extends Controller
     	if($user == "anon."){
     		return $this->redirect('../login');
     	}
-    $friends = $user->getFriendships();
+    //$friends = $user->getFriendships();
     $users = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findAll();
-    $user = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->find(1);
+    //$user = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->find(1);
 
     //$users = $this->getRepository('LaUserBundle:User')->findAll();
     return array('users' => $users);
@@ -40,6 +40,51 @@ class UsersApiController extends Controller
    */
   public function getUserAction(User $user){
     return array('user' => $user);
+  }
+
+  /**
+   * Post Friend Request // fait une demande d'ami, donc stat 0
+   * @param User $user
+   * @return array
+   * @View()
+   * @ParamConverter("newFriend", class="LaUserBundle:User")
+   */
+  public function postFriendrequestAction(User $newFriend){
+  	// /api/friendrequests/53
+
+  	//on recupere l'user courant
+	$user = $this->container->get('security.context')->getToken()->getUser();
+
+	// S'ils sont amis, on ne fait rien
+	$isFriend = false;
+	foreach ($user->getFriendships() as $key => $friendship) {
+		if ( $friendship->getUser2() == $newFriend )
+		{
+			$isFriend = true;
+			if ( $friendship->getStatus() == 1 )
+			{
+				$friendship->setStatus(2);
+				foreach ($newFriend->getFriendships() as $key => $value) {
+					if ($value->getUser2() == $user) {
+						$value->setStatus(2);
+					}
+				}
+			}
+		}
+	}
+
+	if ($isFriend == false) {
+		$user->addFriend($newFriend);
+	}
+	
+	$em = $this->getDoctrine()->getManager();
+
+    $em->persist($user);
+    $em->persist($newFriend);
+
+    $em->flush();
+
+    return array('code' => 1, 'user' => $newFriend);
   }
 }
 

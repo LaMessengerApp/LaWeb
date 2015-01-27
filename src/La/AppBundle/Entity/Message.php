@@ -38,6 +38,21 @@ class Message
   private $text;
 
   /**
+    * @ORM\Column(type="float")
+    */
+  protected $latitude;
+
+  /**
+    * @ORM\Column(type="float")
+    */
+  protected $longitude;
+
+  /**
+    * @ORM\Column(type="integer")
+    */
+  protected $status;
+
+  /**
     * @var \DateTime
     *
     * @ORM\Column(name="date", type="datetime")
@@ -144,5 +159,74 @@ class Message
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * Set latitude
+     *
+     * @param integer $latitude
+     * @return Message
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return integer 
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param integer $longitude
+     * @return Message
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return integer 
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     * @return Message
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer 
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

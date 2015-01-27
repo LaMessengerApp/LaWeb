@@ -23,10 +23,11 @@ class MessagesApiController extends Controller
     * @return array
     * @View()
     */
-  public function postMessageAction($var){
-    // /api/messages/text=lapin&users[]=7
+  public function postMessageAction($varUrl){
+    // /api/messages/text=lapin&users[]=7&lat=13,6123&long=34,628278
+    //  /!\ . = &#46
     // $var =>   users, text, [convId]
-    parse_str($var);
+    parse_str($varUrl, $var);
     
     $me = $this->container->get('security.context')->getToken()->getUser();
 
@@ -36,15 +37,15 @@ class MessagesApiController extends Controller
     $newConv = true;
 
     //si on a un id de conv en param / sinon on regarde si elle existe deja
-    if(isset($convId)){
+    if(isset($var['convId'])){
       $conv = new Conversation();
-      $conv = $em->getRepository('LaAppBundle:Conversation')->find($convId);
+      $conv = $em->getRepository('LaAppBundle:Conversation')->find($var['convId']);
     }else{
       // tester si la conversation n'existe pas deja
       $myConv = $me->getConversations();
       foreach ($myConv as $key => $c) {
         foreach ($c->getUsers() as $k2 => $u) {
-          foreach ($users as $k3 => $u2) {
+          foreach ($var['users'] as $k3 => $u2) {
             if($u->getId() == $u2){
               $conv = new Conversation();
               $conv = $em->getRepository('LaAppBundle:Conversation')->find($c->getId());
@@ -58,7 +59,7 @@ class MessagesApiController extends Controller
     //creation de la conversation
     if($newConv == true){
       $conv = new Conversation();
-      foreach ($users as $k => $v) {
+      foreach ($var['users'] as $k => $v) {
         $user = $em->getRepository('LaUserBundle:User')->find($v);
         $conv->addUser($user);
       }
@@ -71,13 +72,17 @@ class MessagesApiController extends Controller
     $mess = new Message();
     $mess->setAuthor($me);
     $mess->setConversation($conv);
-    $mess->setText($text);
+    $mess->setText($var['text']);
+    $mess->setLatitude(str_replace(",", ".", $var['lat']));
+    $mess->setLongitude(str_replace(",", ".", $var['long']));
+    $mess->setStatus(0);
+    //dans l'url on envoi un nombre avec des virgules, donc on les remplace par des points
 
     $em->persist($mess);
     // Envoi BDD
     $em->flush();
 
-    return array('author' => $me, 'text' => $text, 'users' => $conv->getUsers(), 'newConv' => $newConv);
+    return array('author' => $me, 'text' => $var['text'], 'users' => $conv->getUsers(), 'newConv' => $newConv, 'latitude' => $var['lat'], 'longitude' => $var['long'], 'status' => $mess->getStatus());
   }
 
   /**
@@ -104,6 +109,40 @@ class MessagesApiController extends Controller
 
     //$conversations = $conv;
     return array('conversations' => $conversations);
+  }
+
+  /**
+    *
+    * put message
+    *
+    * @return array
+    * @View()
+    */
+  public function putMessageAction($varUrl){
+    // /api/messages/id=28&text=lapin&lat=13,6123&long=34,628278&status=1
+    parse_str($varUrl, $var);
+
+    $me = $this->container->get('security.context')->getToken()->getUser();
+    $em = $this->getDoctrine()->getManager();
+    $message = $em->getRepository('LaAppBundle:Message')->find($var['id']);
+
+    if(isset($var['text'])){
+      $message->setText($var['text']);
+    }
+    if(isset($var['lat'])){
+      $message->setLatitude(str_replace(",", ".", $var['lat']));
+    }
+    if(isset($var['long'])){
+      $message->setLongitude(str_replace(",", ".", $var['long']));
+    }
+    if(isset($var['status'])){
+      $message->setStatus($var['status']);
+    }
+
+    $em->persist($message);
+    $em->flush();
+
+    return array('code' => 1, 'var' => $var, 'message' => $message);
   }
 }
 
