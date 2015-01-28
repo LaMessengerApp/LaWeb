@@ -23,11 +23,17 @@ class MessagesApiController extends Controller
     * @return array
     * @View()
     */
-  public function postMessageAction($varUrl){
-    // /api/messages/text=lapin&users[]=7&lat=13,6123&long=34,628278
+  public function postMessageAction(Request $request){
+    // /api/messages
     //  /!\ . = &#46
-    // $var =>   users, text, [convId]
-    parse_str($varUrl, $var);
+    //  users, text, [convId]
+
+
+    $var['convId'] = $request->query->get('convId');
+    $var['users'][] = $request->query->get('users');
+    $var['text'] = $request->query->get('text');
+    $var['lat'] = $request->query->get('lat');
+    $var['long'] = $request->query->get('long');
     
     $me = $this->container->get('security.context')->getToken()->getUser();
 
@@ -118,9 +124,13 @@ class MessagesApiController extends Controller
     * @return array
     * @View()
     */
-  public function putMessageAction($varUrl){
-    // /api/messages/id=28&text=lapin&lat=13,6123&long=34,628278&status=1
-    parse_str($varUrl, $var);
+  public function putMessageAction(Request $request, $id){
+    // /api/messages/id
+    $var['id'] = $id;
+    $var['text'] = $request->query->get('text');
+    $var['lat'] = $request->query->get('lat');
+    $var['long'] = $request->query->get('long');
+    $var['status'] = $request->query->get('status');
 
     $me = $this->container->get('security.context')->getToken()->getUser();
     $em = $this->getDoctrine()->getManager();
