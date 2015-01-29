@@ -11,11 +11,18 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /// REST API ///
 
 class MessagesApiController extends Controller
 {
+  protected $container;
+  public function __construct(ContainerInterface $container = null)
+  {
+    $this->container = $container;
+  }
+
   /**
     *
     * post message
@@ -100,9 +107,13 @@ class MessagesApiController extends Controller
     */
   public function getConversationsAction(){
     // /api/conversations
-    $me = $this->container->get('security.context')->getToken()->getUser();
-    $em = $this->getDoctrine()->getManager();
-
+    if(!isset($me)){
+      $me = $this->container->get('security.context')->getToken()->getUser();
+    }
+    if(!isset($em)){
+      $em = $this->getDoctrine()->getManager();
+    }
+    
     //$mess = $em->getRepository('LaAppBundle:Message')->findByAuthor($me->getId());
 
     $conv = $me->getConversations();
@@ -111,8 +122,6 @@ class MessagesApiController extends Controller
       $conversations[$k]['users'] = $c->getUsers();
       $conversations[$k]['messages'] = $em->getRepository('LaAppBundle:Message')->findByConversation($c->getId());
     }
-
-
     //$conversations = $conv;
     return array('conversations' => $conversations);
   }
@@ -136,23 +145,44 @@ class MessagesApiController extends Controller
     $em = $this->getDoctrine()->getManager();
     $message = $em->getRepository('LaAppBundle:Message')->find($var['id']);
 
-    if(isset($var['text'])){
-      $message->setText($var['text']);
-    }
-    if(isset($var['lat'])){
-      $message->setLatitude(str_replace(",", ".", $var['lat']));
-    }
-    if(isset($var['long'])){
-      $message->setLongitude(str_replace(",", ".", $var['long']));
-    }
-    if(isset($var['status'])){
-      $message->setStatus($var['status']);
+    if($message->getAuthor() == $me){
+      if(isset($var['text'])){
+        $message->setText($var['text']);
+      }
+      if(isset($var['lat'])){
+        $message->setLatitude(str_replace(",", ".", $var['lat']));
+      }
+      if(isset($var['long'])){
+        $message->setLongitude(str_replace(",", ".", $var['long']));
+      }
+      if(isset($var['status'])){
+        $message->setStatus($var['status']);
+      }
+
+      $em->persist($message);
+      $em->flush();
+
+      return array('code' => 1, 'var' => $var, 'message' => $message);
+    }else{
+      return array('code' => 3, 'error' => 'you\'re not the author of this message');
     }
 
-    $em->persist($message);
+    
+  }
+  
+  /**
+    *
+    * delete message
+    *
+    * @return array
+    * @View()
+    */
+  public function deleteMessageAction($id){
+    $em = $this->getDoctrine()->getManager();
+    $message = $em->getRepository('LaAppBundle:Message')->find($id);
+    $em->remove($message);
     $em->flush();
-
-    return array('code' => 1, 'var' => $var, 'message' => $message);
+    return array('code' => 1);
   }
 }
 

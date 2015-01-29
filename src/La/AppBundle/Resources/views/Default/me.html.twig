@@ -1,0 +1,23 @@
+<html>
+	<body>
+	<h1>{{ me }}</h1>
+	<br>
+	<h2>Friends</h2>
+	{% for friend in friends %}
+        <small>{{ friend }}</small>
+    {% endfor %}
+	<br>
+	<h2>Conversations</h2>
+	{% for conversation in conversations %}
+        <div>
+        {{ conversation.id }}
+        {% for user in conversation.users %}
+        	<small>{{ user.username }}</small>
+        {% endfor %}
+        {% for message in conversation.messages %}
+        	<p>{{ message.text }}</p>
+        {% endfor %}
+        </div>
+    {% endfor %}
+	</body>
+</html>

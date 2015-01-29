@@ -43,6 +43,16 @@ class UsersApiController extends Controller
   }
 
   /**
+   * @return array
+   * @View()
+   * get me
+   */
+  public function getMeAction(){
+    $me = $this->container->get('security.context')->getToken()->getUser();
+    return array('me' => $me);
+  }
+
+  /**
    * Post Friend Request // fait une demande d'ami, donc stat 0
    * @param User $user
    * @return array
@@ -53,31 +63,31 @@ class UsersApiController extends Controller
   	// /api/friendrequests/53
 
   	//on recupere l'user courant
-	$user = $this->container->get('security.context')->getToken()->getUser();
+  	$user = $this->container->get('security.context')->getToken()->getUser();
 
-	// S'ils sont amis, on ne fait rien
-	$isFriend = false;
-	foreach ($user->getFriendships() as $key => $friendship) {
-		if ( $friendship->getUser2() == $newFriend )
-		{
-			$isFriend = true;
-			if ( $friendship->getStatus() == 1 )
-			{
-				$friendship->setStatus(2);
-				foreach ($newFriend->getFriendships() as $key => $value) {
-					if ($value->getUser2() == $user) {
-						$value->setStatus(2);
-					}
-				}
-			}
-		}
-	}
+  	// S'ils sont amis, on ne fait rien
+  	$isFriend = false;
+  	foreach ($user->getFriendships() as $key => $friendship) {
+  		if ( $friendship->getUser2() == $newFriend )
+  		{
+  			$isFriend = true;
+  			if ( $friendship->getStatus() == 1 )
+  			{
+  				$friendship->setStatus(2);
+  				foreach ($newFriend->getFriendships() as $key => $value) {
+  					if ($value->getUser2() == $user) {
+  						$value->setStatus(2);
+  					}
+  				}
+  			}
+  		}
+  	}
 
-	if ($isFriend == false) {
-		$user->addFriend($newFriend);
-	}
-	
-	$em = $this->getDoctrine()->getManager();
+  	if ($isFriend == false) {
+  		$user->addFriend($newFriend);
+  	}
+  	
+  	$em = $this->getDoctrine()->getManager();
 
     $em->persist($user);
     $em->persist($newFriend);

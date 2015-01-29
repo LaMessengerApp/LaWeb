@@ -7,4 +7,6 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-
+    message_api_controller:
+        class: La\AppBundle\Controller\MessagesApiController
+        arguments: [@service_container]

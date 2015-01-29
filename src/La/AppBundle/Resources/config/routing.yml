@@ -3,8 +3,8 @@ la_app_homepage:
     defaults: { _controller: LaAppBundle:Default:index }
 
 la_app_conversations:
-    path:     /conversations
-    defaults: { _controller: LaAppBundle:Default:conversations }
+    path:     /me
+    defaults: { _controller: LaAppBundle:Default:me }
 
 la_app_addconversation:
     path:     /addconversation/{users}
