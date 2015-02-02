@@ -1,0 +1,106 @@
+body{
+	background-color: #F5F5F5 !important;
+	color: #333 !important;
+}
+.row {
+	margin-right: 0px !important;
+	margin-left: 0px !important;
+}
+.left-section{
+	padding: 0px !important;
+	position: relative;
+	width: 33%;
+	min-width: 300px;
+	float: left;
+	background-color: #F5F5F5;
+}
+.right-section{
+	position: fixed !important;
+	right: 0px;
+	height: 100%;
+	background-color: #00b0bc;
+	width: 67%;
+	min-width: 300px;
+	float: right;
+}
+h1, h2, h3, h4{
+	padding: 0px 15px;
+}
+p{
+	padding: 0px 15px;
+}
+h1{
+	margin-bottom: 0px !important; 
+}
+h4{
+	padding-bottom: 10px;
+}
+.conversation{
+
+}
+.message{
+	border-top: solid 1px #CCC;
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+}
+.message:hover{
+	background-color: #DDD;
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+}
+.message:last-child{
+	border-bottom: solid 1px #CCC;
+}
+.lead{
+	margin: 0px !important;
+}
+small{
+	padding: 0px 15px;
+}
+
+#menu{
+	position: relative;
+	width: 100%;
+	height: 40px;
+	background-color: #00b0bc;
+}
+#menu h1{
+	margin: 0;
+}
+
+.btn-friends{
+	background-color: #EEE;
+	display: block;
+	font-size: 20px;
+	padding: 2px 15px;
+	color: #333;
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+}
+.btn-friends:hover{
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+	background-color: #FF5349;
+	color: #333;
+	text-decoration: none;	
+}
+.btn-messages{
+	background-color: #EEE;
+	display: block;
+	font-size: 20px;
+	padding: 2px 15px;
+	color: #333;
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+}
+.btn-messages:hover{
+	-webkit-transition: 0.5s; 
+    transition: 0.5s;
+	background-color: #FF5349;
+	color: #333;
+	text-decoration: none;	
+}
+.friends-section{
+	background-color: #FAFAFA;
+	padding: 5px 0px 2px 0px;
+}

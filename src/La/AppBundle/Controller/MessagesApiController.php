@@ -136,10 +136,10 @@ class MessagesApiController extends Controller
   public function putMessageAction(Request $request, $id){
     // /api/messages/id
     $var['id'] = $id;
-    $var['text'] = $request->query->get('text');
-    $var['lat'] = $request->query->get('lat');
-    $var['long'] = $request->query->get('long');
-    $var['status'] = $request->query->get('status');
+    $var['text'] = $request->request->get('text');
+    $var['lat'] = $request->request->get('lat');
+    $var['long'] = $request->request->get('long');
+    $var['status'] = $request->request->get('status');
 
     $me = $this->container->get('security.context')->getToken()->getUser();
     $em = $this->getDoctrine()->getManager();

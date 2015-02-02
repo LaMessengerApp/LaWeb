@@ -43,6 +43,18 @@ class UsersApiController extends Controller
   }
 
   /**
+   * @return bool
+   * @View()
+   */
+  public function getIsauthentificatedAction(){
+    $user = $this->container->get('security.context')->getToken()->getUser();
+      if($user == "anon."){
+        return 0;
+      }
+    return 1;
+  }
+
+  /**
    * @return array
    * @View()
    * get me

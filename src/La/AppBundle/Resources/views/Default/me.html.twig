@@ -1,23 +1,108 @@
 <html>
+	<header>
+		{% stylesheets '@LaAppBundle/Resources/public/css/main.css' '@LaAppBundle/Resources/public/bootstrap/css/bootstrap.css' %}
+		  <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+		{% endstylesheets %}
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	</header>
 	<body>
-	<h1>{{ me }}</h1>
-	<br>
-	<h2>Friends</h2>
-	{% for friend in friends %}
-        <small>{{ friend }}</small>
-    {% endfor %}
-	<br>
-	<h2>Conversations</h2>
-	{% for conversation in conversations %}
-        <div>
-        {{ conversation.id }}
-        {% for user in conversation.users %}
-        	<small>{{ user.username }}</small>
-        {% endfor %}
-        {% for message in conversation.messages %}
-        	<p>{{ message.text }}</p>
-        {% endfor %}
-        </div>
-    {% endfor %}
+	<div class="row">
+	    <div class="left-section">
+	    	<div id="menu">
+	    		<h1>LA</h1>
+	    	</div>
+		    <div id="content">
+		    	<h2>{{ me|capitalize }}</h2>
+				<a class="btn-friends">Friends</a>
+				<div class="friends-section">
+					{% for friend in friends %}
+				        <p>{{ friend|capitalize }}</p>
+				    {% endfor %}
+				</div>
+				
+				<h3>Conversations</h3>
+				{% for conversation in conversations %}
+			        <div class="conversation">
+			        <h4 class="btn-messages">
+			        {% for user in conversation.users %}
+			        	{{ user.username|capitalize }}{% if not loop.last %} - {% endif %}
+			        {% endfor %}
+			        </h4>
+			        {% for message in conversation.messages %}
+				        <div data-lat="{{ message.latitude }}" data-long="{{ message.longitude }}" class="message">
+				     		<small>{{ message.author }}</small>
+				        	<small>{{ message.latitude }} - {{ message.longitude }}</small>
+				        	<p  class="lead">{{ message.text }}</p>
+				        </div>
+			        {% endfor %}
+			        </div>
+			    {% endfor %}
+		    </div>
+	    </div>
+	    <div class="right-section" id="map">
+	    	<script>
+	    	var laIcon = L.icon({
+			    iconUrl: '{{ asset("images/mini_logo_map.png") }}',
+			    shadowUrl: '{{ asset("images/mini_logo_map_shadow.png") }}',
+
+			    iconSize:     [42, 50], // size of the icon
+			    shadowSize:   [51, 50], // size of the shadow
+			    iconAnchor:   [21, 50], // point of the icon which will correspond to marker's location
+			    shadowAnchor: [0, 50],  // the same for the shadow
+			    popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
+			});
+		    	
+
+
+			var messages = new L.LayerGroup();
+			{% for conversation in conversations %}
+				{% for message in conversation.messages %}
+			        L.marker([{{ message.latitude }}, {{ message.longitude }}], {icon: laIcon}).bindPopup('<h2>{{ message.author }} :</h2> <p>{{ message.text }}</p>').addTo(messages);		
+			    {% endfor %}
+		    {% endfor %}
+
+
+		    var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+					'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+					'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+				mbUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
+
+		    var grayscale   = L.tileLayer(mbUrl, {id: 'examples.map-20v6611k', attribution: mbAttr});
+
+			var map = L.map('map', {
+				center: [48.85807, 2.29489],
+				zoom: 18,
+				layers: [grayscale, messages]
+			});
+
+			//changeCenter(48.85807, 2.29489);
+
+			function changeCenter(lat, long){
+				var currentZoom = map.getZoom()
+				map.setView(new L.LatLng(lat, long), currentZoom);
+				//map.panTo(new L.LatLng(lat, long));
+			}
+		
+		    </script>
+	    </div>
+	</div>
+	<script type="text/javascript">
+		$( document ).ready(function(){
+				$(".friends-section").hide();
+				$(".btn-friends").click(function(){
+					$(".friends-section").toggle(300);
+				});
+				$(".message").hide();
+				$(".btn-messages").click(function(){
+					$(this).parent().find('.message').toggle(300);
+				});
+				$('.message').click(function(){
+					changeCenter($(this).data('lat'), $(this).data('long'));
+				});
+		});
+	</script>
 	</body>
 </html>
