@@ -6,11 +6,16 @@ namespace La\AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use La\UserBundle\Entity\User;
 use La\AppBundle\Entity\Conversation;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\VirtualProperty;
 
 
 /**
  * @ORM\Entity(repositoryClass="La\AppBundle\Entity\MessageRepository")
  * @ORM\Table(name="message")
+ * @ExclusionPolicy("all") 
  */
 class Message
 {
@@ -18,11 +23,13 @@ class Message
    * @ORM\Column(name="id", type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue(strategy="AUTO")
+   * @expose
    */
   private $id;
 
   /**
    * @ORM\ManyToOne(targetEntity="La\UserBundle\Entity\User", cascade={"persist"})
+   * @expose
    */
   private $author;
 
@@ -34,21 +41,25 @@ class Message
 
   /**
    * @ORM\Column(name="text", type="string", length=1024)
+   * @expose
    */
   private $text;
 
   /**
     * @ORM\Column(type="float")
+    * @expose
     */
   protected $latitude;
 
   /**
     * @ORM\Column(type="float")
+    * @expose
     */
   protected $longitude;
 
   /**
     * @ORM\Column(type="integer")
+    * @expose
     */
   protected $status;
 
@@ -56,6 +67,7 @@ class Message
     * @var \DateTime
     *
     * @ORM\Column(name="date", type="datetime")
+    * @expose
     */
   private $date;
 
