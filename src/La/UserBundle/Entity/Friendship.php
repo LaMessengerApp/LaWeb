@@ -60,15 +60,25 @@ class Friendship
   {
     $this->user1 = $user1;
   }
+  
+  public function getUser1()
+  {
+    return $this->user1;
+  }
+
+  public function setUser2($user2)
+  {
+    $this->user2 = $user2;
+  }
 
   public function getUser2()
   {
     return $this->user2;
   }
 
-  public function setUser2($user2)
+  public function getId()
   {
-    $this->user2 = $user2;
+    return $this->id;
   }
 
   public function __toString()

@@ -10,3 +10,7 @@ services:
     message_api_controller:
         class: La\AppBundle\Controller\MessagesApiController
         arguments: [@service_container]
+
+    user_api_controller:
+        class: La\UserBundle\Controller\UsersApiController
+        arguments: [@service_container]

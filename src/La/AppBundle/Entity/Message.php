@@ -61,6 +61,7 @@ class Message
     * @ORM\Column(type="integer")
     * @expose
     */
+  // 0 pas recupere, 1 recupere, 2 ouvert
   protected $status;
 
   /**

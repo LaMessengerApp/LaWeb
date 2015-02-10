@@ -36,11 +36,13 @@ class MessagesApiController extends Controller
     //  users, text, [convId]
 
 
-    $var['convId'] = $request->query->get('convId');
-    $var['users'][] = $request->query->get('users');
-    $var['text'] = $request->query->get('text');
-    $var['lat'] = $request->query->get('lat');
-    $var['long'] = $request->query->get('long');
+    $var['convId'] = $request->request->get('convId');
+    $var['users'][] = $request->request->get('users');
+    $var['text'] = $request->request->get('text');
+    $var['lat'] = $request->request->get('lat');
+    $var['long'] = $request->request->get('long');
+
+    //return array('users' => $request->query->get('users'));
     
     $me = $this->container->get('security.context')->getToken()->getUser();
 
@@ -117,6 +119,7 @@ class MessagesApiController extends Controller
     //$mess = $em->getRepository('LaAppBundle:Message')->findByAuthor($me->getId());
 
     $conv = $me->getConversations();
+    $conversations = array();
     foreach ($conv as $k => $c) {
       $conversations[$k]['id'] = $c->getId();
       $conversations[$k]['users'] = $c->getUsers();
@@ -145,7 +148,7 @@ class MessagesApiController extends Controller
     $em = $this->getDoctrine()->getManager();
     $message = $em->getRepository('LaAppBundle:Message')->find($var['id']);
 
-    if($message->getAuthor() == $me){
+    //if($message->getAuthor() == $me){ //enleve car on peu modif le status sans etre l'author
       if(isset($var['text'])){
         $message->setText($var['text']);
       }
@@ -163,9 +166,9 @@ class MessagesApiController extends Controller
       $em->flush();
 
       return array('code' => 1, 'var' => $var, 'message' => $message);
-    }else{
-      return array('code' => 3, 'error' => 'you\'re not the author of this message');
-    }
+    //}else{
+    //  return array('code' => 3, 'error' => 'you\'re not the author of this message');
+    //}
 
     
   }

@@ -1,47 +1,143 @@
 <html>
 	<header>
-		{% stylesheets '@LaAppBundle/Resources/public/css/main.css' '@LaAppBundle/Resources/public/bootstrap/css/bootstrap.css' %}
-		  <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
-		{% endstylesheets %}
+
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 	    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 	    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+		{% stylesheets '@LaAppBundle/Resources/public/css/main.css' '@LaAppBundle/Resources/public/bootstrap/css/bootstrap.css' %}
+		  <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+		{% endstylesheets %}
+		{% javascripts '@LaAppBundle/Resources/public/js/main_me.js' '@LaAppBundle/Resources/public/bootstrap/js/bootstrap.js' %}
+		    <script type="text/javascript" src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+
+		
 	</header>
 	<body>
 	<div class="row">
 	    <div class="left-section">
 	    	<div id="menu">
-	    		<h1>LA</h1>
+	    		<h1>Là</h1>
+	    		<div class="btn-menu"><i class="fa fa-ellipsis-v fa-2x"></i> </div>
 	    	</div>
+	    	<div id="menu-section">
+				<a class="btn-list-menu" href="{{ path('fos_user_security_logout') }}"><i class="fa fa-sign-out"></i> Log out</a>
+			</div>
 		    <div id="content">
-		    	<h2>{{ me|capitalize }}</h2>
-				<a class="btn-friends">Friends</a>
-				<div class="friends-section">
-					{% for friend in friends %}
-				        <p>{{ friend|capitalize }}</p>
-				    {% endfor %}
-				</div>
-				
-				<h3>Conversations</h3>
-				{% for conversation in conversations %}
-			        <div class="conversation">
-			        <h4 class="btn-messages">
-			        {% for user in conversation.users %}
-			        	{{ user.username|capitalize }}{% if not loop.last %} - {% endif %}
-			        {% endfor %}
-			        </h4>
-			        {% for message in conversation.messages %}
-				        <div data-lat="{{ message.latitude }}" data-long="{{ message.longitude }}" class="message">
-				     		<small>{{ message.author }}</small>
-				        	<small>{{ message.latitude }} - {{ message.longitude }}</small>
-				        	<p  class="lead">{{ message.text }}</p>
+			    <div id="homepanel">
+			    	<h2>{{ me|capitalize }}</h2>
+					<a class="btn-home" id="btn-friends"><i class="fa fa-users"></i> Friends</a>
+			        <a class="btn-home" id="btn-conversations"><i class="fa fa-comments"></i> Conversations</a>
+			        <br>
+			        <a class="btn-home btn-newmessage"><i class="fa fa-pencil-square-o"></i> New Là</a>
+			    </div>
+			    <div class="second" id="friendspanel">
+			    	<a class="btn-home btn-back"><i class="fa fa-chevron-left"></i> Back</a>
+			    	<h3><i class="fa fa-users fa-2x"></i>  Friends</h3>
+			    	<div class="friends-section">
+						{% for friend in friends %}
+					        <p>{{ friend|capitalize }}
+					        {% if friend.status == 0 %}
+					        	<small>waiting for response</small>
+					        {% elseif friend.status == 1 %}
+					        	<small><a class="acceptinvitation" data-name="{{ friend }}">Accept the invitation</a></small>
+					        {% endif %}
+					        </p>
+					    {% endfor %}
+					    <a class="btn-home" id="btn-addfriend"><i class="fa fa-user-plus"></i> Add friend</a>
+					</div>
+			    </div>
+			    <div class="second" id="conversationspanel">
+				    <a class="btn-home btn-back"><i class="fa fa-chevron-left"></i> Back</a>
+				    <br>
+				    <a class="btn-home btn-newmessage"><i class="fa fa-pencil-square-o"></i> New Là</a>
+					<h3><i class="fa fa-comments fa-2x"></i>  Conversations</h3>
+					{% for conversation in conversations %}
+				        <div class="conversation">
+				        <h4 class="btn-messages">
+				        {% for user in conversation.users %}
+				        	{{ user.username|capitalize }}{% if not loop.last %} - {% endif %}
+				        {% endfor %}
+				        <span>{{ conversation.messages|length }}</span>
+				        </h4>
+				        {% for message in conversation.messages %}
+					        <div data-id="{{ message.id }}" data-lat="{{ message.latitude }}" data-long="{{ message.longitude }}" class="message">
+					        	{% if ((message.status == 1) or (message.status == 0)) and message.author != me %}
+						        <div class="notopen">
+						        	<i class="fa fa-eye fa-4x"></i>
+						        </div>
+						        {% endif %}
+					     		<small>{{ message.author }}</small>
+					        	<small>{{ message.latitude }} - {{ message.longitude }}</small>
+					        	<p  class="lead">{{ message.text }}</p>
+					        </div>
+				        {% endfor %}
 				        </div>
-			        {% endfor %}
-			        </div>
-			    {% endfor %}
-		    </div>
-	    </div>
+				    {% endfor %}
+
+			    </div>
+			    <div class="second" id="newmessagepanel">
+			    	<a class="btn-home btn-back"><i class="fa fa-chevron-left"></i> Back</a>
+			    	<h3><i class="fa fa-pencil-square-o fa-2x"></i>  New message</h3>
+			    	<form>
+					  <div class="form-group col-sm-12">
+				    	<label class="col-sm-2 control-label"><i class="fa fa-user"></i></label>
+				      	<select id="newmessageuser" class="col-sm-10">
+					      	<option value="" disabled selected>Select your friend</option>
+				    	{% for friend in friends %}
+				    		{% if friend.status == 2 %}
+					        <option value="{{ friend }}">{{ friend|capitalize }}</option>
+					        {% endif %}
+					    {% endfor %}
+						</select>
+					  </div>
+					  <div class="form-group  col-sm-12">
+					    <label for="message" class="col-sm-2 control-label"><i class="fa fa-pencil"></i> </label>
+					    <div class="col-sm-10">
+					      <textarea class="form-control" rows="3" id="newmessagetext"></textarea>
+					    </div>
+					  </div>
+					  <div class="form-group  col-sm-12">
+					    <label for="location" class="col-sm-2 control-label"><i class="fa fa-globe"></i> </label>
+					    <div class="col-sm-4">
+					      <input type="number" class="form-control" id="newmessagelat" placeholder="Lat">
+					    </div>
+					    <div class="col-sm-4">
+					      <input type="number" class="form-control" id="newmessagelong" placeholder="Long">
+					    </div>
+					    <div class="col-sm-2">
+					      <i id="btn-setlocation" class="fa fa-compass fa-2x"></i>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-9 col-sm-3">
+					      <button type="submit" class="btn btn-default" id="sentmessage">Là <i class="fa fa-location-arrow"></i></button>
+					    </div>
+					  </div>
+					</form>
+			    </div>
+			    <div class="second" id="addfriendpanel">
+			    	<a class="btn-home btn-back"><i class="fa fa-chevron-left"></i> Back</a>
+			    	<h3><i class="fa fa-user-plus fa-x3"></i> Add friend</h3>
+			    	<div class="modal-body">
+				        <form class="form-inline" style="text-align:center">
+						  <div class="form-group">
+						    <input type="text" class="form-control" id="newfriendusername" placeholder="User Name">
+						  </div>
+						  <button type="submit" class="btn btn-default" id="btn-searchFriend">Search</button>
+						</form>
+						<div id="newFriendResponse" style="text-align:center">
+
+						</div>
+			      </div>
+			    </div>
+		    </div> <!-- end content -->
+	    </div> <!-- end left section -->
+
+
 	    <div class="right-section" id="map">
 	    	<script>
 	    	var laIcon = L.icon({
@@ -60,7 +156,9 @@
 			var messages = new L.LayerGroup();
 			{% for conversation in conversations %}
 				{% for message in conversation.messages %}
-			        L.marker([{{ message.latitude }}, {{ message.longitude }}], {icon: laIcon}).bindPopup('<h2>{{ message.author }} :</h2> <p>{{ message.text }}</p>').addTo(messages);		
+					{% if message.status == 2 or message.author == me %}
+			        L.marker([{{ message.latitude }}, {{ message.longitude }}], {icon: laIcon}).bindPopup('<h2>{{ message.author }}</h2> <p>{{ message.text }}</p>').addTo(messages);		
+			        {% endif %}
 			    {% endfor %}
 		    {% endfor %}
 
@@ -78,7 +176,7 @@
 				layers: [grayscale, messages]
 			});
 
-			//changeCenter(48.85807, 2.29489);
+			
 
 			function changeCenter(lat, long){
 				var currentZoom = map.getZoom()
@@ -89,20 +187,7 @@
 		    </script>
 	    </div>
 	</div>
-	<script type="text/javascript">
-		$( document ).ready(function(){
-				$(".friends-section").hide();
-				$(".btn-friends").click(function(){
-					$(".friends-section").toggle(300);
-				});
-				$(".message").hide();
-				$(".btn-messages").click(function(){
-					$(this).parent().find('.message').toggle(300);
-				});
-				$('.message').click(function(){
-					changeCenter($(this).data('lat'), $(this).data('long'));
-				});
-		});
-	</script>
+
+
 	</body>
 </html>

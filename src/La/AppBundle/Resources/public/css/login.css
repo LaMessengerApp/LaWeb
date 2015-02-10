@@ -1,0 +1,38 @@
+body{
+	background-color: #F5F5F5 !important;
+	color: #FFF !important;
+}
+#formlogin{
+	position: relative;
+	top: 30px;
+	margin: auto auto;
+	height: 360px;
+	width: 500px;
+	background-color: #DDD;
+	padding: 40px;
+	background-color: #00b0bc;
+}
+#map{
+	position: fixed;
+	top:0px;
+	height: 100%;
+	width: 100%;
+	background-color: #00b0bc;
+}
+h1{
+	color: #FFF !important;
+}
+button{
+	background-color: #00b0bc !important;
+	color: #FFF !important;
+	border-color: #FFF !important;
+	float: right;
+}
+button:hover{
+	border-color: #CCC !important;
+	color: #CCC !important;
+}
+small{
+	color: #FFF !important;
+	font-size: 12px !important;
+}
