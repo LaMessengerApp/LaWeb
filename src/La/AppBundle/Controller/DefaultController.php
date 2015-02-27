@@ -12,8 +12,14 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->redirect($this->generateUrl('la_app_conversations'));
-        //return $this->render('LaAppBundle:Default:index.html.twig', array('name' => $name));
+        //landing page 
+        $me = $this->getUser();
+        if(!is_null($me)){
+            return $this->redirect($this->generateUrl('la_app_conversations'));
+        }   
+        return $this->render('LaAppBundle:Default:index.html.twig');
+        
+        //return $this->redirect($this->generateUrl('la_app_conversations'));
     }
     public function meAction()
     {

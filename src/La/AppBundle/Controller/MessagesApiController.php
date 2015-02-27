@@ -109,13 +109,9 @@ class MessagesApiController extends Controller
     */
   public function getConversationsAction(){
     // /api/conversations
-    if(!isset($me)){
       $me = $this->container->get('security.context')->getToken()->getUser();
-    }
-    if(!isset($em)){
       $em = $this->getDoctrine()->getManager();
-    }
-    
+        
     //$mess = $em->getRepository('LaAppBundle:Message')->findByAuthor($me->getId());
 
     $conv = $me->getConversations();

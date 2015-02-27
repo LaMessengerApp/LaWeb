@@ -72,6 +72,14 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
+
+jms_serializer:
+    metadata:
+        directories:
+            FOSUB:
+                namespace_prefix: FOS\UserBundle
+                path: %kernel.root_dir%/serializer/FOSUB
+
 # FOSUserBundle Configuration
 fos_user:
     db_driver: orm

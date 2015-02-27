@@ -1,1 +1,68 @@
-Hello {{ name }}!
+<html>
+	<header>
+
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+		{% stylesheets '@LaAppBundle/Resources/public/css/mainindex.css' '@LaAppBundle/Resources/public/bootstrap/css/bootstrap.css' %}
+		  <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+		{% endstylesheets %}
+		{% javascripts '@LaAppBundle/Resources/public/js/main_me.js' '@LaAppBundle/Resources/public/bootstrap/js/bootstrap.js' %}
+		    <script type="text/javascript" src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+
+		
+	</header>
+	<body>
+	<div id="menu">Là - About us - <a href="{{ path('la_app_conversations') }}">Connexion</a></div>
+	<div class="global">
+	  <div class="left">
+		<h1><span class="lalogohome">Là</span> messenger</h1>
+		<h2>Send located messages</h2>
+	  </div>
+	  <div class="right"id="map">
+	    	<script>
+	    	var laIcon = L.icon({
+			    iconUrl: '{{ asset("images/mini_logo_map.png") }}',
+			    shadowUrl: '{{ asset("images/mini_logo_map_shadow.png") }}',
+
+			    iconSize:     [42, 50], // size of the icon
+			    shadowSize:   [51, 50], // size of the shadow
+			    iconAnchor:   [21, 50], // point of the icon which will correspond to marker's location
+			    shadowAnchor: [0, 50],  // the same for the shadow
+			    popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
+			});
+		    	
+
+		    var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+					'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+					'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+				mbUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
+
+		    var grayscale   = L.tileLayer(mbUrl, {id: 'examples.map-20v6611k', attribution: mbAttr});
+
+			var map = L.map('map', {
+				center: [48.85807, 2.29489],
+				zoom: 18,
+				layers: [grayscale]
+			});
+
+			
+
+			function changeCenter(lat, long){
+				var currentZoom = map.getZoom()
+				map.setView(new L.LatLng(lat, long), currentZoom);
+				//map.panTo(new L.LatLng(lat, long));
+			}
+		
+		    </script>
+	  </div>
+	</div>
+	
+
+
+	</body>
+</html>

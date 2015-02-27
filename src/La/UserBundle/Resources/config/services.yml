@@ -5,3 +5,12 @@ services:
     la_user.friendshipService:
         class: La\UserBundle\Services\userService
         arguments: [@doctrine.orm.entity_manager, userId ,newFriendId]
+
+    wsse.security.authentication.provider:
+        class:  La\UserBundle\Security\Authentication\Provider\WsseProvider
+        arguments: ['', %kernel.cache_dir%/security/nonces]
+
+    wsse.security.authentication.listener:
+        class:  La\UserBundle\Security\Firewall\WsseListener
+        arguments: [@security.context, @security.authentication.manager]
+

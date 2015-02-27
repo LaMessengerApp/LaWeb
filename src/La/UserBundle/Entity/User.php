@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use La\AppBundle\Entity\Conversation;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\VirtualProperty;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,6 +48,7 @@ class User extends BaseUser
      * @Assert\File(maxSize="500k")
      */
     public $file;
+    
 
     public function __construct()
     {

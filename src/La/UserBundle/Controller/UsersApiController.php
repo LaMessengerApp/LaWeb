@@ -12,6 +12,11 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use FOS\RestBundle\Controller\Annotations\Route;
+
 
 /// REST API ///
 
@@ -24,13 +29,53 @@ class UsersApiController extends Controller
   }
 
   /**
+   * @param Username, Password
+   * @return array
+   * @Route("login")
+   * @View()
+   */
+  public function postLoginAction(Request $request){
+    $username = $request->request->get('username');
+    $password = $request->request->get('password');
+
+    $em = $this->getDoctrine();
+    
+    $user = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findOneByUsername($username);
+    
+    if (!$user) {
+        //throw new UsernameNotFoundException("User not found");
+        return array('success' => "User not found");
+    } else {
+        // Get the encoder for the users password
+        $encoder = $this->get('security.encoder_factory')->getEncoder($user);
+
+        if($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
+          // User + password match
+          
+          $token = new UsernamePasswordToken($user, null, "main", $user->getRoles());
+          $this->get("security.context")->setToken($token); //now the user is logged in
+           
+          //now dispatch the login event
+          $request = $this->get("request");
+          $event = new InteractiveLoginEvent($request, $token);
+          $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+        } else {
+          // Password bad
+          return array('success' => "fail");
+        }
+        
+    }
+    return array('success' => "true");
+  }
+
+  /**
   * @return array
   * @View()
   */
   public function getUsersAction(){
     $user = $this->container->get('security.context')->getToken()->getUser();
     	if($user == "anon."){
-    		return $this->redirect('../login');
+    		return array('message' => "not connected");
     	}
     //$friends = $user->getFriendships();
     $users = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findAll();
