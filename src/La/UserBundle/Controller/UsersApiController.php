@@ -5,6 +5,7 @@ namespace La\UserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use La\UserBundle\Entity\User;
 use La\UserBundle\Entity\Repository\UserRepository;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -39,12 +40,11 @@ class UsersApiController extends Controller
     $password = $request->request->get('password');
 
     $em = $this->getDoctrine();
-    
     $user = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findOneByUsername($username);
-    
+
     if (!$user) {
         //throw new UsernameNotFoundException("User not found");
-        return array('success' => "User not found");
+        return array('fail' => "User not found");
     } else {
         // Get the encoder for the users password
         $encoder = $this->get('security.encoder_factory')->getEncoder($user);
@@ -177,6 +177,37 @@ class UsersApiController extends Controller
     $em->flush();
 
     return array('code' => $code, 'user' => $newFriend);
+  }
+
+  /**
+   * @param imgPath
+   * @return array
+   * @Route("userpicture")
+   * @View()
+   */
+  public function postUserpictureAction(Request $request){
+    $me = $this->container->get('security.context')->getToken()->getUser();
+
+    $image = $request->files->get('file');
+
+    // générer un nom aléatoire et essayer de deviner l'extension (plus sécurisé)
+    $extension = $image->guessExtension();
+    $imgName = substr($image->getClientOriginalName(), 0, strlen($image->getClientOriginalName())-strlen($extension)-1);
+
+    if (!$extension) {
+        // l'extension n'a pas été trouvée
+        $extension = 'bin';
+    }
+    $dir =  __DIR__.'/../../../../web/userimages';
+    $newImgName = $imgName.'-'.rand(1, 999999).'.'.$extension;
+    $image->move($dir, $newImgName);
+
+    $me->setPictureName($newImgName); 
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($me);
+    $em->flush();
+
+    return array('success' => "true", "file" => $newImgName);
   }
 }
 

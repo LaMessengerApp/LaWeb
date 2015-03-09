@@ -31,6 +31,6 @@ class DefaultController extends Controller
         $conversations = $this->get("message_api_controller")->getConversationsAction();
         $friends = $me->getFriendships();
         
-        return $this->render('LaAppBundle:Default:me.html.twig', array('me' => $me, 'conversations' => $conversations['conversations'], 'friends' => $friends));
+        return $this->render('LaAppBundle:Default:me.html.twig', array('me' => $me, 'userPicture' => $me->getPictureName(), 'conversations' => $conversations['conversations'], 'friends' => $friends));
     }
 }

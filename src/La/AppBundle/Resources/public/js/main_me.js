@@ -112,8 +112,9 @@ function init(){
 
 
 function searchFriend(name){
+	var url = document.URL.substring(0,document.URL.length-3);
 	var request = $.ajax({
-	  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/userbyusernames/"+name,
+	  url: url+"/api/userbyusernames/"+name,
 	  type: "GET",
 	  dataType: "json",
 	});
@@ -134,8 +135,9 @@ function searchFriend(name){
 }
 
 function addFriend(id){
+	var url = document.URL.substring(0,document.URL.length-3);
 	var request = $.ajax({
-	  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/friendrequests/"+id,
+	  url: url+"/api/friendrequests/"+id,
 	  type: "POST",
 	  dataType: "json",
 	});
@@ -167,8 +169,9 @@ function addFriend(id){
 }
 
 function valideFriendship(name, link){
+	var url = document.URL.substring(0,document.URL.length-3);
 	var request = $.ajax({
-	  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/userbyusernames/"+name,
+	  url: url+"/api/userbyusernames/"+name,
 	  type: "GET",
 	  dataType: "json",
 	});
@@ -182,9 +185,9 @@ function valideFriendship(name, link){
 
 
 function newMessage(username, text, lat, long){
-
+	var url = document.URL.substring(0,document.URL.length-3);
 	var requestUser = $.ajax({
-	  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/userbyusernames/"+username,
+	  url: url+"/api/userbyusernames/"+username,
 	  type: "GET",
 	  dataType: "json",
 	});
@@ -193,7 +196,7 @@ function newMessage(username, text, lat, long){
 		console.log(response['user']['id']);
 		var messageData = { users : response['user']['id'], text : text, lat : lat, long: long };
 		var request = $.ajax({
-		  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/messages",
+		  url: url+"/api/messages",
 		  type: "POST",
 		  data:  messageData,
 		  dataType: "json",
@@ -213,10 +216,11 @@ function newMessage(username, text, lat, long){
 }
 
 function openMessage(messageId){
+	var url = document.URL.substring(0,document.URL.length-3);
 	console.log("openMessage");
 	var messageData = {status : 2};
 	var request = $.ajax({
-	  url: "http://localhost:8888/LaWeb/web/app_dev.php/api/messages/"+messageId,
+	  url: url+"/api/messages/"+messageId,
 	  type: "PUT",
 	  data:  messageData,
 	  dataType: "json",
