@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use La\UserBundle\Entity\User;
 use La\UserBundle\Entity\Repository\UserRepository;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -16,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+
 use FOS\RestBundle\Controller\Annotations\Route;
 
 
@@ -69,14 +71,38 @@ class UsersApiController extends Controller
   }
 
   /**
+   * @param Username, Password
+   * @return array
+   * @Route("newuser")
+   * @View()
+   */
+  public function postNewuserAction(Request $request){
+    $username = $request->request->get('username');
+    $password = $request->request->get('password');
+    $email = $request->request->get('email');
+
+    $em = $this->getDoctrine()->getManager();
+
+    $u = new User();
+    $u->setUsername($username);
+    $u->setPlainPassword($password);
+    $u->setEmail($email);
+    $u->setEnabled(1);
+    $em->persist($u);
+    $em->flush($u);
+    
+    return array('success' => "true", "username"=> $username, 'mail'=> $email);
+  }
+
+  /**
   * @return array
   * @View()
   */
   public function getUsersAction(){
     $user = $this->container->get('security.context')->getToken()->getUser();
-    	if($user == "anon."){
-    		return array('message' => "not connected");
-    	}
+    if(!($user instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
     //$friends = $user->getFriendships();
     $users = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->findAll();
     //$user = $this->getDoctrine()->getManager()->getRepository('LaUserBundle:User')->find(1);
@@ -114,7 +140,7 @@ class UsersApiController extends Controller
    */
   public function getIsauthentificatedAction(){
     $user = $this->container->get('security.context')->getToken()->getUser();
-      if($user == "anon."){
+      if(!($user instanceof User)){
         return 0;
       }
     return 1;
@@ -127,6 +153,9 @@ class UsersApiController extends Controller
    */
   public function getMeAction(){
     $me = $this->container->get('security.context')->getToken()->getUser();
+    if(!($me instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
     return array('me' => $me);
   }
 
@@ -138,12 +167,13 @@ class UsersApiController extends Controller
    * @ParamConverter("newFriend", class="LaUserBundle:User")
    */
   public function postFriendrequestAction(User $newFriend){
-  	// /api/friendrequests/53
 
     $code = 0;
   	//on recupere l'user courant
   	$user = $this->container->get('security.context')->getToken()->getUser();
-
+    if(!($user instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
   	// S'ils sont amis, on ne fait rien
   	$isFriend = false;
   	foreach ($user->getFriendships() as $key => $friendship) {
@@ -187,8 +217,11 @@ class UsersApiController extends Controller
    */
   public function postUserpictureAction(Request $request){
     $me = $this->container->get('security.context')->getToken()->getUser();
+    if(!($me instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
 
-    $image = $request->files->get('file');
+    $image = $request->files->get('image');
 
     // générer un nom aléatoire et essayer de deviner l'extension (plus sécurisé)
     $extension = $image->guessExtension();

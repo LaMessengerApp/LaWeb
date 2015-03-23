@@ -28,12 +28,28 @@
 			</div>
 		    <div id="content">
 			    <div id="homepanel">
-			    	<img height="50" src="{{ asset("userimages/") ~ userPicture }}"/>
-			    	<h2>{{ me|capitalize }}</h2>
-					<a class="btn-home" id="btn-friends"><i class="fa fa-users"></i> Friends</a>
-			        <a class="btn-home" id="btn-conversations"><i class="fa fa-comments"></i> Conversations</a>
-			        <br>
-			        <a class="btn-home btn-newmessage"><i class="fa fa-pencil-square-o"></i> New Là</a>
+			    	<div id="profil">
+				    	<h2>{{ me|capitalize }}</h2>
+				    	
+				    		<div class="profilImg" 
+{% if userPicture is empty %}
+				    			style="background:url({{ asset("images/noprofil.svg") }}) no-repeat 0px 0px;" 
+{% else %}
+				    			style="background:url({{ asset("userimages/") ~ userPicture }}) no-repeat 0px 0px;"
+{% endif %}
+				    			>
+
+							    &nbsp;
+							<i class="fa fa-picture-o fa-3x changepicture"></i>
+							</div>
+			    	</div>
+
+			    	<div class="btn-section">
+						<a class="btn-home" id="btn-friends"><i class="fa fa-users"></i> Friends</a>
+				        <a class="btn-home" id="btn-conversations"><i class="fa fa-comments"></i> Conversations</a>
+				        <br>
+				        <a class="btn-home btn-newmessage"><i class="fa fa-pencil-square-o"></i> New Là</a>
+			        </div>
 			    </div>
 			    <div class="second" id="friendspanel">
 			    	<a class="btn-home btn-back"><i class="fa fa-chevron-left"></i> Back</a>
@@ -74,6 +90,9 @@
 					     		<small>{{ message.author }}</small>
 					        	<small>{{ message.latitude }} - {{ message.longitude }}</small>
 					        	<p  class="lead">{{ message.text }}</p>
+					        	{% if message.img!="" %}
+					        		<img src="{{ asset("messageimages/") ~ message.img }}"/>
+					        	{% endif %}
 					        </div>
 				        {% endfor %}
 				        </div>
@@ -113,11 +132,20 @@
 					      <i id="btn-setlocation" class="fa fa-compass fa-2x"></i>
 					    </div>
 					  </div>
+					  <div class="form-group  col-sm-12">
+					    <label for="location" class="col-sm-2 control-label"><i class="fa fa-picture-o"></i></label>
+					    <div class="col-sm-9">
+					      <input type="file" class="upload-message-image"/>
+					    </div>
+					  </div>
+					 
 					  <div class="form-group">
 					    <div class="col-sm-offset-9 col-sm-3">
 					      <button type="submit" class="btn btn-default" id="sentmessage">Là <i class="fa fa-location-arrow"></i></button>
 					    </div>
 					  </div>
+					  
+
 					</form>
 			    </div>
 			    <div class="second" id="addfriendpanel">
@@ -138,6 +166,18 @@
 		    </div> <!-- end content -->
 	    </div> <!-- end left section -->
 
+		<div class="chosepicture">
+			<h2>Choose your picture</h2>
+			<form>
+				<input type="file" class="upload"/>
+				<button type="submit" class="btn btn-default ok-upload-profil">Ok</button>
+				<button type="submit" class="btn btn-default cancel-upload-profil">Cancel</button>
+			</form>
+		</div>
+
+		<div id="spinner">
+			<p><i class="fa fa-spinner fa-pulse fa-5x"></i></p>
+		</div>
 
 	    <div class="right-section" id="map">
 	    	<script>
@@ -155,10 +195,15 @@
 
 
 			var messages = new L.LayerGroup();
+			
 			{% for conversation in conversations %}
 				{% for message in conversation.messages %}
+					var tmpHTML = '<h2>{{ message.author }}</h2> <p>{{ message.text }}</p>';
+					{% if message.img!="" %}
+						tmpHTML+='<img src="{{ asset("messageimages/") ~ message.img }}"/>';
+					{% endif %}
 					{% if message.status == 2 or message.author == me %}
-			        L.marker([{{ message.latitude }}, {{ message.longitude }}], {icon: laIcon}).bindPopup('<h2>{{ message.author }}</h2> <p>{{ message.text }}</p>').addTo(messages);		
+			        L.marker([{{ message.latitude }}, {{ message.longitude }}], {icon: laIcon}).bindPopup(tmpHTML).addTo(messages);		
 			        {% endif %}
 			    {% endfor %}
 		    {% endfor %}

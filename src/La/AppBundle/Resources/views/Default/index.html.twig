@@ -19,11 +19,14 @@
 	<body>
 	<div id="menu">Là - About us - <a href="{{ path('la_app_conversations') }}">Connexion</a></div>
 	<div class="global">
-	  <div class="left">
+	  <div class="section" id="presentation">
 		<h1><span class="lalogohome">Là</span> messenger</h1>
 		<h2>Send located messages</h2>
+		  <div id="big_logo">
+		  	<img src="{{ asset("images/logo_home.svg")}}"/>
+		  </div>
 	  </div>
-	  <div class="right"id="map">
+	  <div class="section"id="map">
 	    	<script>
 	    	var laIcon = L.icon({
 			    iconUrl: '{{ asset("images/mini_logo_map.png") }}',

@@ -46,6 +46,12 @@ class Message
   private $text;
 
   /**
+   * @ORM\Column(name="img", type="string", length=1024)
+   * @expose
+   */
+  private $img;
+
+  /**
     * @ORM\Column(type="float")
     * @expose
     */
@@ -241,5 +247,39 @@ class Message
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set img
+     *
+     * @param string $img
+     * @return Message
+     */
+    public function setImg($img)
+    {
+        // générer un nom aléatoire et essayer de deviner l'extension (plus sécurisé)
+        $extension = $img->guessExtension();
+        $imgName = substr($img->getClientOriginalName(), 0, strlen($img->getClientOriginalName())-strlen($extension)-1);
+
+        if (!$extension) {
+            // l'extension n'a pas été trouvée
+            $extension = 'bin';
+        }
+        $dir =  __DIR__.'/../../../../web/messageimages';
+        $newImgName = $imgName.'-'.rand(1, 999999).'.'.$extension;
+        $img->move($dir, $newImgName);
+        
+        $this->img = $newImgName;
+        return $this;
+    }
+
+    /**
+     * Get img
+     *
+     * @return string 
+     */
+    public function getImg()
+    {
+        return $this->img;
     }
 }

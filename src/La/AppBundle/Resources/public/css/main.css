@@ -59,6 +59,12 @@ h4{
 .message:last-child{
 	border-bottom: solid 1px #CCC;
 }
+.message img{
+	max-width: 80%;
+	margin-left: 30px;
+	padding: 10px 10px;
+	border-left: solid 1px #AAA;
+}
 .notopen{
 	background-color: #00b0bc;
 	position: absolute;
@@ -87,6 +93,10 @@ small{
 	margin: 0;
 	width: 90%;
 	color: #FFF;
+}
+.btn-section{
+	float: left;
+	width: 100%;
 }
 .btn-menu{
 	position: relative;
@@ -121,7 +131,7 @@ small{
 .btn-home:hover{
 	-webkit-transition: 0.5s; 
     transition: 0.5s;
-	background-color: #FF5349;
+	background-color: #CCC;
 	color: #333;
 	text-decoration: none;	
 }
@@ -179,7 +189,7 @@ small{
 	-webkit-transition: 0.5s; 
     transition: 0.5s;
     color: #FFF;
-	background-color: #FF5349;
+	background-color: #18CDCA;
 	text-decoration: none;	
 }
 #btn-setlocation{
@@ -195,5 +205,88 @@ small{
 }
 #locationcursor{
 	position: absolute;
+}
+
+#profil{
+	width: 100%;
+	float: left;
+}
+#profil h2{
+	float: left;
+	width: 50%;
+}
+.profilImg{
+	float: right;
+ 	overflow:hidden;
+    -webkit-border-radius:45px;
+    -moz-border-radius:45px;
+    border-radius:45px;
+    width:90px;
+    height:90px;
+    margin: 10px;
+    background-size: cover !important;
+    -moz-box-shadow: 0px 0px 15px 0px #666;
+	-webkit-box-shadow: 0px 0px 15px 0px #666;
+	-o-box-shadow: 0px 0px 15px 0px #666;
+	box-shadow: 0px 0px 15px 0px #666;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#666, Direction=NaN, Strength=15);
+}
+.leaflet-container img{
+  max-height: 300px;
+  padding: 10px;
+  border-left: solid 1px #AAA;
+}
+.changepicture{
+	display: none;	
+}
+.profilImg:hover .changepicture{
+	display: inline-block;
+	position: relative;
+	top:24px;
+	left:15px;
+	margin: auto;
+	color: #00b0bc;
+}
+
+.chosepicture{
+	display:none;
+	position: fixed;
+	right: 0;
+    left: 0;
+    top: 40px;
+    margin-right: auto;
+    margin-left: auto;
+	background-color: #F5F5F5;
+	height: 150px;
+	width: 320px;
+	z-index: 1000;
+	-moz-box-shadow: 0px 0px 15px 0px #666;
+	-webkit-box-shadow: 0px 0px 15px 0px #666;
+	-o-box-shadow: 0px 0px 15px 0px #666;
+	box-shadow: 0px 0px 15px 0px #666;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#666, Direction=NaN, Strength=15);
+}
+.chosepicture input{
+	padding: 10px;
+}
+.chosepicture form button{
+	float: right;
+	margin-right: 10px !important;
+}
+
+#spinner{
+	display: none;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-image: url(http://1x1px.me/FFFFFF-0.5.png);
+	text-align: center;
+	color: #333;
+    z-index: 10000;
+}
+#spinner p{
+	position: relative;
+	top: 50%;
+    transform: translateY(-50%);
 }
 

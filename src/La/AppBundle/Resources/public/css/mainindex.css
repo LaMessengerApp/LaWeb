@@ -1,6 +1,7 @@
 body{
 	background-color: #FFF !important;
 	color: #333 !important;
+	overflow-y: hidden;
 }
 .global{
 	position: relative;
@@ -8,25 +9,34 @@ body{
 }
 #menu{
 	position: fixed;
-	background-color: #00b0bc;
+	text-align: right;
 	width: 100%;
 	padding: 5px;
 	z-index: 10;
+	padding: 10px 50px;
 }
-.left{
+.section{
 	position: relative;
-	float: left;
-	width: 50%;
+	width: 100%;
 	padding: 30px;
 }
-.right{
-	position: fixed;
-	right: 0px;
-	width: 50%;
-	height: 100%;
-	background-color: #00b0bc;
-	z-index: 2;
+#map{
+	height: 400px;
+	z-index: 1;
+}
+#presentation{
+	height: 400px;
+}
+#presentation h1, #presentation h2{
+	text-align: center;
 }
 .lalogohome{
 	font-size: 3em;
+}
+#big_logo{
+	position: relative;
+	margin: auto;
+	width: 300px;
+	z-index: 10;
+	margin-top: 50px;
 }

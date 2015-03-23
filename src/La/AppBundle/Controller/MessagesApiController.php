@@ -10,6 +10,7 @@ use La\AppBundle\Entity\Message;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -41,10 +42,12 @@ class MessagesApiController extends Controller
     $var['text'] = $request->request->get('text');
     $var['lat'] = $request->request->get('lat');
     $var['long'] = $request->request->get('long');
+    $var['img'] = $request->files->get('img');
 
     //return array('users' => $request->query->get('users'));
     
     $me = $this->container->get('security.context')->getToken()->getUser();
+ 
 
     $em = $this->getDoctrine()->getManager();
 
@@ -88,6 +91,9 @@ class MessagesApiController extends Controller
     $mess->setAuthor($me);
     $mess->setConversation($conv);
     $mess->setText($var['text']);
+    if($var['img'] != null){
+      $mess->setImg($var['img']);
+    }
     $mess->setLatitude(str_replace(",", ".", $var['lat']));
     $mess->setLongitude(str_replace(",", ".", $var['long']));
     $mess->setStatus(0);
@@ -97,7 +103,7 @@ class MessagesApiController extends Controller
     // Envoi BDD
     $em->flush();
 
-    return array('author' => $me, 'text' => $var['text'], 'users' => $conv->getUsers(), 'newConv' => $newConv, 'latitude' => $var['lat'], 'longitude' => $var['long'], 'status' => $mess->getStatus());
+    return array('author' => $me, 'text' => $var['text'], 'users' => $conv->getUsers(), 'newConv' => $newConv, 'latitude' => $var['lat'], 'longitude' => $var['long'], 'img' => $var['img'], 'status' => $mess->getStatus());
   }
 
   /**
@@ -110,6 +116,7 @@ class MessagesApiController extends Controller
   public function getConversationsAction(){
     // /api/conversations
       $me = $this->container->get('security.context')->getToken()->getUser();
+      
       $em = $this->getDoctrine()->getManager();
         
     //$mess = $em->getRepository('LaAppBundle:Message')->findByAuthor($me->getId());
@@ -141,6 +148,7 @@ class MessagesApiController extends Controller
     $var['status'] = $request->request->get('status');
 
     $me = $this->container->get('security.context')->getToken()->getUser();
+
     $em = $this->getDoctrine()->getManager();
     $message = $em->getRepository('LaAppBundle:Message')->find($var['id']);
 
@@ -177,11 +185,17 @@ class MessagesApiController extends Controller
     * @View()
     */
   public function deleteMessageAction($id){
+    $me = $this->container->get('security.context')->getToken()->getUser();
     $em = $this->getDoctrine()->getManager();
     $message = $em->getRepository('LaAppBundle:Message')->find($id);
-    $em->remove($message);
-    $em->flush();
-    return array('code' => 1);
+    if($message->getAuthor() == $me){
+      $em->remove($message);
+      $em->flush();
+      return array('code' => 1);
+    }else{
+      throw new UnauthorizedHttpException('', 'Bad author');
+    }
+    
   }
 }
 

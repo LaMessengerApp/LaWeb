@@ -60,6 +60,19 @@ $( document ).ready(function(){
 		});
 	});
 
+	//changepicture
+	$('.profilImg').click(function (e){
+		$('.chosepicture').fadeToggle(200);
+	});
+	$('.cancel-upload-profil').click(function (e){
+		e.preventDefault();
+		$('.chosepicture').fadeToggle(200);
+	});
+	$('.ok-upload-profil').click(function (e){
+		e.preventDefault();
+		uploadProfilPicture();
+	});
+
 	$('#sentmessage').click(function (e){
 		e.preventDefault();
 		miss =0;
@@ -160,6 +173,7 @@ function addFriend(id){
 		if(response['code'] == 3){
 			//deja ami
 		}
+		location.reload();
 	});
 	 
 	request.fail(function( jqXHR, textStatus ) {
@@ -186,20 +200,32 @@ function valideFriendship(name, link){
 
 function newMessage(username, text, lat, long){
 	var url = document.URL.substring(0,document.URL.length-3);
+	$("#spinner").show();
 	var requestUser = $.ajax({
 	  url: url+"/api/userbyusernames/"+username,
 	  type: "GET",
 	  dataType: "json",
 	});
-	 
+
 	requestUser.done(function( response ) {
 		console.log(response['user']['id']);
-		var messageData = { users : response['user']['id'], text : text, lat : lat, long: long };
+		var file = $('.upload-message-image').prop('files');
+		data = new FormData();
+	    data.append("img", file[0]);
+		var messageData = { users : response['user']['id'], text : text, lat : lat, long: long};
+		data.append("users", response['user']['id']);
+		data.append("text", text);
+		data.append("lat", lat);
+		data.append("long", long);
+		console.log(data);
 		var request = $.ajax({
 		  url: url+"/api/messages",
 		  type: "POST",
-		  data:  messageData,
+		  data:  data,
 		  dataType: "json",
+		  cache: false,
+		  processData: false,
+		  contentType: false,
 		});
 		 
 		request.done(function( response ) {
@@ -235,3 +261,35 @@ function openMessage(messageId){
 		console.log(textStatus);
 	});
 }
+
+function uploadProfilPicture(){
+	$("#spinner").show();
+	var url = document.URL.substring(0,document.URL.length-3);
+	var file = $('.chosepicture .upload').prop('files');
+	data = new FormData();
+    data.append("image", file[0]);
+	var request = $.ajax({
+	  url: url+"/api/userpicture",
+	  type: "POST",
+	  data:  data,
+	  dataType: "json",
+	  cache: false,
+	  processData: false,
+	  contentType: false,
+	});
+	 
+	request.done(function( response ) {
+		console.log(response);
+		$('.chosepicture').fadeToggle(200);
+		$("#spinner").hide();
+		$('.profilImg').css('background-image','url(/LaWeb/web/userimages/'+response['file']+')');
+	});
+	 
+	request.fail(function( jqXHR, textStatus ) {
+		console.log("fail");
+		console.log(textStatus);
+		$("#spinner").hide();
+	});
+}
+
+
