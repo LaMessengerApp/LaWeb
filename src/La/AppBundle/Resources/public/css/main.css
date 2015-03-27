@@ -10,9 +10,11 @@ body{
 	padding: 0px !important;
 	position: relative;
 	width: 33%;
-	min-width: 300px;
+	min-width: 470px;
 	float: left;
 	background-color: #F5F5F5;
+	z-index: 1;
+	height: 100%;
 }
 .right-section{
 	position: fixed !important;
@@ -40,8 +42,8 @@ h4{
 	padding-bottom: 10px;
 	margin: 0px !important;
 }
-.conversation{
-
+.conversation p {
+	padding: 25px 15px;
 }
 .message{
 	border-top: solid 1px #CCC;
@@ -79,8 +81,19 @@ h4{
 }
 small{
 	padding: 0px 15px;
+	float: left;
+	width: 42%;
+	font-size: 80% !important;
+	text-align: center;
 }
-
+small:first-child{
+	width: 25%;
+	text-align: left;
+}
+small:nth-child(3){
+	width: 33%;
+	text-align: right;
+}
 #menu{
 	position: relative;
 	width: 100%;
@@ -231,7 +244,7 @@ small{
 	box-shadow: 0px 0px 15px 0px #666;
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=#666, Direction=NaN, Strength=15);
 }
-.leaflet-container img{
+.leaflet-popup-content img{
   max-height: 300px;
   padding: 10px;
   border-left: solid 1px #AAA;

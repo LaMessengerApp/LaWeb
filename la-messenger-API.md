@@ -67,6 +67,12 @@
     
 *Retourne toutes les conversations de l'utilisateur courant*
 
+	/api/userpictures/{idUser}
+	
+*Retourne le nom de l'image de profil*
+
+*Dossier avec les img : http://lamessenger.alwaysdata.net/userimages/*
+
 ##PUT##
 
     /api/messages/{idMessage}

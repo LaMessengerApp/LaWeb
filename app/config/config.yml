@@ -79,6 +79,9 @@ jms_serializer:
             FOSUB:
                 namespace_prefix: FOS\UserBundle
                 path: %kernel.root_dir%/serializer/FOSUB
+            LaUserBundle:
+                namespace_prefix: La\UserBundle
+                path: %kernel.root_dir%/serializer/LaUserBundle
 
 # FOSUserBundle Configuration
 fos_user:

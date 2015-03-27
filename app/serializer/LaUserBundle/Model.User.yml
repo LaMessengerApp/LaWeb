@@ -1,0 +1,9 @@
+La\UserBundle\Entity\User:
+    exclusion_policy: NONE
+        properties:
+            conversations:
+                exclude: true
+            friendships:
+                exclude: true
+            pictureName:
+                expose: true

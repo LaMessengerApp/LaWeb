@@ -44,7 +44,7 @@ class MessagesApiController extends Controller
     $var['long'] = $request->request->get('long');
     $var['img'] = $request->files->get('img');
 
-    //return array('users' => $request->query->get('users'));
+
     
     $me = $this->container->get('security.context')->getToken()->getUser();
  

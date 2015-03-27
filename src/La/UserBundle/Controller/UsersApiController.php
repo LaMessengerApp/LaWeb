@@ -46,7 +46,7 @@ class UsersApiController extends Controller
 
     if (!$user) {
         //throw new UsernameNotFoundException("User not found");
-        return array('fail' => "User not found");
+        return array('success' => false);
     } else {
         // Get the encoder for the users password
         $encoder = $this->get('security.encoder_factory')->getEncoder($user);
@@ -61,13 +61,14 @@ class UsersApiController extends Controller
           $request = $this->get("request");
           $event = new InteractiveLoginEvent($request, $token);
           $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+          return array('success' => true);
         } else {
           // Password bad
-          return array('success' => "fail");
+          return array('success' => false);
         }
         
     }
-    return array('success' => "true");
+    return array('success' => true);
   }
 
   /**
@@ -141,9 +142,9 @@ class UsersApiController extends Controller
   public function getIsauthentificatedAction(){
     $user = $this->container->get('security.context')->getToken()->getUser();
       if(!($user instanceof User)){
-        return 0;
+        return array('success' => false);
       }
-    return 1;
+    return array('success' => true);
   }
 
   /**
@@ -157,6 +158,34 @@ class UsersApiController extends Controller
       throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
     }
     return array('me' => $me);
+  }
+
+  /**
+   * @return array
+   * @View()
+   * get user picture
+   * @ParamConverter("user", class="LaUserBundle:User")
+   */
+  public function getUserpictureAction(User $user){
+    $me = $this->container->get('security.context')->getToken()->getUser();
+    if(!($me instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
+    return array('img' => $user->getPictureName());
+  }
+
+  /**
+   * @return array
+   * @View()
+   * get friends
+   * @Route("friends")
+   */
+  public function getFriendAction(){
+    $me = $this->container->get('security.context')->getToken()->getUser();
+    if(!($me instanceof User)){
+      throw new UnauthorizedHttpException('', 'The requested resource requires user authentication');
+    }
+    return array('friends' => $me->getFriendships());
   }
 
   /**

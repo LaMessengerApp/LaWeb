@@ -33,7 +33,7 @@
 				    	
 				    		<div class="profilImg" 
 {% if userPicture is empty %}
-				    			style="background:url({{ asset("images/noprofil.svg") }}) no-repeat 0px 0px;" 
+				    			style="background:url({{ asset("bundles/laapp/images/noprofil.svg") }}) no-repeat 0px 0px;" 
 {% else %}
 				    			style="background:url({{ asset("userimages/") ~ userPicture }}) no-repeat 0px 0px;"
 {% endif %}
@@ -88,7 +88,8 @@
 						        </div>
 						        {% endif %}
 					     		<small>{{ message.author }}</small>
-					        	<small>{{ message.latitude }} - {{ message.longitude }}</small>
+					        	<small>lat : {{ message.latitude|round(5, 'floor') }} | long : {{ message.longitude|round(5, 'floor') }}</small>
+					        	<small>{{ message.date|date('h:m:s Y-m-d') }}</small>
 					        	<p  class="lead">{{ message.text }}</p>
 					        	{% if message.img!="" %}
 					        		<img src="{{ asset("messageimages/") ~ message.img }}"/>
@@ -182,8 +183,8 @@
 	    <div class="right-section" id="map">
 	    	<script>
 	    	var laIcon = L.icon({
-			    iconUrl: '{{ asset("images/mini_logo_map.png") }}',
-			    shadowUrl: '{{ asset("images/mini_logo_map_shadow.png") }}',
+			    iconUrl: '{{ asset("bundles/laapp/images/mini_logo_map.png") }}',
+			    shadowUrl: '{{ asset("bundles/laapp/images/mini_logo_map_shadow.png") }}',
 
 			    iconSize:     [42, 50], // size of the icon
 			    shadowSize:   [51, 50], // size of the shadow
@@ -192,7 +193,6 @@
 			    popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
 			});
 		    	
-
 
 			var messages = new L.LayerGroup();
 			

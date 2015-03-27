@@ -41,6 +41,7 @@ class User extends BaseUser
 
      /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
      * @Expose
      */
     protected $pictureName;
